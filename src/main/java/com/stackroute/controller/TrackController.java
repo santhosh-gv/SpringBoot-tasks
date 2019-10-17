@@ -5,6 +5,7 @@ import com.stackroute.exceptions.TrackAlreadyExistsException;
 import com.stackroute.exceptions.TrackNotFoundException;
 import com.stackroute.service.TrackService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -15,12 +16,14 @@ import java.io.FileNotFoundException;
 @RestController
 @RequestMapping(value = "api/v1")
 public class TrackController {
-    TrackService trackService;
-
     @Autowired
-    public TrackController(TrackService trackService){
-        this.trackService=trackService;
-    }
+    @Qualifier("trackDummyServiceImpl")
+    private TrackService trackService;
+
+
+//    public TrackController(TrackService trackService){
+//        this.trackService=trackService;
+//    }
 
     @PostMapping("track")
     public ResponseEntity<?> saveUser(@RequestBody Track track) throws TrackAlreadyExistsException{
