@@ -9,7 +9,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
+import java.io.FileNotFoundException;
+
 
 @RestController
 @RequestMapping(value = "api/v1")
@@ -22,15 +23,11 @@ public class TrackController {
     }
 
     @PostMapping("track")
-    public ResponseEntity<?> saveUser(@RequestBody Track track){
+    public ResponseEntity<?> saveUser(@RequestBody Track track) throws TrackAlreadyExistsException{
+
         ResponseEntity responseEntity;
-        try {
-            trackService.saveTrack(track);
-            responseEntity = new ResponseEntity("Successfully created", HttpStatus.CREATED);
-        }catch (TrackAlreadyExistsException e)
-        {
-            responseEntity = new ResponseEntity<String>(e.getMessage(),HttpStatus.CONFLICT);
-        }
+        trackService.saveTrack(track);
+        responseEntity = new ResponseEntity("Successfully created", HttpStatus.CREATED);
         return responseEntity;
     }
 
@@ -50,45 +47,25 @@ public class TrackController {
     }
 
     @RequestMapping(value = "/track/{id}", method = RequestMethod.DELETE)
-    public ResponseEntity<?> removeTrack(@PathVariable Integer id) {
+    public ResponseEntity<?> removeTrack(@PathVariable Integer id) throws TrackNotFoundException {
         ResponseEntity responseEntity;
-        try {
             trackService.removeTrack(id);
             responseEntity= new ResponseEntity("Successfully removed",HttpStatus.OK);
-        }catch (TrackNotFoundException e)
-        {
-            responseEntity = new ResponseEntity(e.getMessage(),HttpStatus.CONFLICT);
-        }
-
-        return responseEntity;
+            return responseEntity;
     }
 
     @RequestMapping(value = "/track/{id}", method = RequestMethod.PUT)
     public ResponseEntity<?> updateComments(@RequestBody Track track, @PathVariable int id) {
         ResponseEntity responseEntity;
-        try {
-            trackService.saveTrack(trackService.updateComments(id,track));
             responseEntity= new ResponseEntity("Successfully updated",HttpStatus.OK);
-        }catch (Exception e)
-        {
-            responseEntity = new ResponseEntity(e.getMessage(),HttpStatus.CONFLICT);
-        }
-
         return responseEntity;
 
     }
 
     @GetMapping("/track/{trackName}")
-    public ResponseEntity<?> trackByName(@PathVariable String trackName) {
-        ResponseEntity responseEntity;
-        try {
-            trackService.trackByName(trackName);
-            responseEntity= new ResponseEntity(trackService.trackByName(trackName),HttpStatus.OK);
-        }catch (TrackNotFoundException e)
-        {
-            responseEntity = new ResponseEntity(e.getMessage(),HttpStatus.CONFLICT);
-        }
-        return responseEntity;
+    public ResponseEntity<?> trackByName(@PathVariable String trackName) throws TrackNotFoundException {
+
+        return new ResponseEntity(trackService.trackByName(trackName),HttpStatus.OK);
 
     }
 }
