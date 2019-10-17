@@ -5,16 +5,16 @@ import com.stackroute.exceptions.TrackAlreadyExistsException;
 import com.stackroute.exceptions.TrackNotFoundException;
 import com.stackroute.repository.TrackRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 //@Primary
 public class TrackDummyServiceImpl implements TrackService {
 
-    TrackRepository trackRepository;
+    private TrackRepository trackRepository;
 
     @Autowired
     public  TrackDummyServiceImpl(TrackRepository trackRepository){
@@ -36,23 +36,36 @@ public class TrackDummyServiceImpl implements TrackService {
     }
 
     @Override
-    public List<Track> displaySavedTrack() {
-        return trackRepository.findAll();
+    public List<Track> displaySavedTrack() throws TrackNotFoundException {
+        if(trackRepository.findAll()!=null)
+        {
+            throw new TrackNotFoundException();
+        }
+            return trackRepository.findAll();
     }
 
+
+
     @Override
-    public Track updateComments(int id,Track track) {
+    public Track updateComments(int id,Track track) throws TrackNotFoundException {
+        if(!trackRepository.existsById(id))
+        {
+            throw new TrackNotFoundException("Dummy Track not found");
+        }
+
         track.setTrackId(id);
         return track;
     }
 
     @Override
-    public void removeTrack(int trackId) throws TrackNotFoundException {
+    public Optional<Track> removeTrack(int trackId) throws TrackNotFoundException {
         if(!trackRepository.existsById(trackId))
         {
             throw new TrackNotFoundException("Dummy Track not found");
         }
+        Optional<Track> track = trackRepository.findById(trackId);
         trackRepository.deleteById(trackId);
+        return track;
     }
 
     @Override

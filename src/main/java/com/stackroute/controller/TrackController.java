@@ -6,60 +6,51 @@ import com.stackroute.exceptions.TrackNotFoundException;
 import com.stackroute.service.TrackService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.context.annotation.PropertySource;
+import org.springframework.context.annotation.PropertySources;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.io.FileNotFoundException;
-
-
+@PropertySources({
+        @PropertySource(value = "classpath:application-prod.properties"),
+        @PropertySource(value = "classpath:application.properties")
+})
 @RestController
 @RequestMapping(value = "api/v1")
 public class TrackController {
+
     @Autowired
     @Qualifier("trackDummyServiceImpl")
     private TrackService trackService;
 
-
+    ResponseEntity responseEntity;
 //    public TrackController(TrackService trackService){
 //        this.trackService=trackService;
 //    }
 
     @PostMapping("track")
-    public ResponseEntity<?> saveUser(@RequestBody Track track) throws TrackAlreadyExistsException{
-
-        ResponseEntity responseEntity;
+    public ResponseEntity<?> saveTrack(@RequestBody Track track) throws TrackAlreadyExistsException{
         trackService.saveTrack(track);
         responseEntity = new ResponseEntity("Successfully created", HttpStatus.CREATED);
         return responseEntity;
     }
 
     @GetMapping("track")
-    public ResponseEntity<?> displaySavedTrack(){
-
-        ResponseEntity responseEntity;
-        try {
-
-            responseEntity= new ResponseEntity(trackService.displaySavedTrack(),HttpStatus.OK);
-        }catch (Exception e)
-        {
-            responseEntity = new ResponseEntity(e.getMessage(),HttpStatus.CONFLICT);
-        }
-
+    public ResponseEntity<?> displaySavedTrack() throws TrackNotFoundException {
+        responseEntity= new ResponseEntity(trackService.displaySavedTrack(),HttpStatus.OK);
         return responseEntity;
     }
 
     @RequestMapping(value = "/track/{id}", method = RequestMethod.DELETE)
     public ResponseEntity<?> removeTrack(@PathVariable Integer id) throws TrackNotFoundException {
-        ResponseEntity responseEntity;
             trackService.removeTrack(id);
             responseEntity= new ResponseEntity("Successfully removed",HttpStatus.OK);
             return responseEntity;
     }
 
     @RequestMapping(value = "/track/{id}", method = RequestMethod.PUT)
-    public ResponseEntity<?> updateComments(@RequestBody Track track, @PathVariable int id) {
-        ResponseEntity responseEntity;
+    public ResponseEntity<?> updateComments(@RequestBody Track track, @PathVariable int id) throws TrackNotFoundException {
             responseEntity= new ResponseEntity("Successfully updated",HttpStatus.OK);
         return responseEntity;
 

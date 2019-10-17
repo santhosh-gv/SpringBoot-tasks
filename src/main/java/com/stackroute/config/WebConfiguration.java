@@ -22,6 +22,7 @@ public class WebConfiguration {
 //        return registrationBean;
 //    }
 
+    // Swagger2 API
         @Bean
         public Docket api() {
             return new Docket(DocumentationType.SWAGGER_2)
