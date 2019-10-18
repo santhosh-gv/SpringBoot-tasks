@@ -66,11 +66,12 @@ public class TrackServiceImpl implements TrackService {
 
     @Override
     public Track trackByName(String trackName) throws TrackNotFoundException {
-        if(trackRepository.findByTitle(trackName)==null)
+        if(trackRepository.findByTrackName(trackName)==null)
         {
             throw new TrackNotFoundException("Track not found");
         }
-        return trackRepository.findByTitle(trackName);
+        return trackRepository.findByTrackName(trackName);
 
     }
+
 }

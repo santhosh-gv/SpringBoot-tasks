@@ -12,16 +12,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-@PropertySources({
-        @PropertySource(value = "classpath:application-prod.properties"),
-        @PropertySource(value = "classpath:application.properties")
-})
 @RestController
 @RequestMapping(value = "api/v1")
 public class TrackController {
 
     @Autowired
-    @Qualifier("trackDummyServiceImpl")
+//    @Qualifier("trackDummyServiceImpl")
     private TrackService trackService;
 
     ResponseEntity responseEntity;
@@ -56,10 +52,10 @@ public class TrackController {
 
     }
 
-    @GetMapping("/track/{trackName}")
-    public ResponseEntity<?> trackByName(@PathVariable String trackName) throws TrackNotFoundException {
-
-        return new ResponseEntity(trackService.trackByName(trackName),HttpStatus.OK);
-
-    }
+//    @GetMapping("/track/{trackName}")
+//    public ResponseEntity<?> trackByName(@PathVariable String trackName) throws TrackNotFoundException {
+//
+//        return new ResponseEntity(trackService.trackByName(trackName),HttpStatus.OK);
+//
+//    }
 }
